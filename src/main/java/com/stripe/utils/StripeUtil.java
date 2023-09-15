@@ -1,6 +1,5 @@
 package com.stripe.utils;
 
-
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StripeUtil {
-
     @Value("${stripe.apikey}")
     String stripeKey;
 

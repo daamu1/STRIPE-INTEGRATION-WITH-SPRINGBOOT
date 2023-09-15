@@ -13,7 +13,6 @@ import com.stripe.repository.CustomerRepository;
 import com.stripe.utils.StripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,34 +24,21 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/stripe")
 public class StripePaymentController {
-    @Autowired
-    RestTemplate restTemplate;
     @Value("${stripe.apikey}")
-    String stripeKey;
-    @Value("${webhook.url}")
-    private String webhookUrl;
+   private String stripeKey;
     @Autowired
     StripeUtil stripeUtil;
     @Autowired
     CustomerRepository customerRepository;
 
     @PostMapping("/createCustomer")
-    public CustomerData createCustomer(@RequestBody CustomerRequest customerRequest) throws StripeException {
+    public void createCustomer(@RequestBody CustomerRequest customerRequest) throws StripeException {
         Stripe.apiKey = stripeKey;
         Map<String, Object> params = new HashMap<>();
         params.put("name", customerRequest.getName());
         params.put("email", customerRequest.getEmail());
         params.put("phone", customerRequest.getPhone());
         Customer customer = Customer.create(params);
-        CustomerData customerData = CustomerData.builder()
-                .customerId(customer.getId())
-                .email(customer.getEmail())
-                .created(customer.getCreated())
-                .phone(customer.getPhone())
-                .name(customer.getName())
-                .build();
-        customerRepository.save(customerData);
-        return customerData;
     }
 
 
